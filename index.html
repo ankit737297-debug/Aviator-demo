@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aviator Demo — Virtual Coins</title>
+<style>
+:root{--accent:#ff2738;--bg:#090b18;--panel:#12162b;--glow:rgba(255,39,56,.35)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 55% 25%,#251044 0,#090b18 55%);color:#f7f7ff;font:15px system-ui,Segoe UI,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid #34304c;background:#090b18cc;position:sticky;top:0;z-index:2}
+.logo{font-size:24px;font-weight:900;font-style:italic;color:var(--accent);letter-spacing:1px}.wallet{background:#1a2038;padding:10px 16px;border-radius:12px;border:1px solid #4b4168}
+button{border:0;border-radius:10px;padding:12px 18px;font-weight:800;color:white;background:var(--accent);cursor:pointer;box-shadow:0 0 18px var(--glow)}button:disabled{opacity:.5;cursor:not-allowed}
+.layout{display:grid;grid-template-columns:190px minmax(0,1fr) 260px;gap:14px;padding:14px;max-width:1500px;margin:auto}
+.panel{background:linear-gradient(145deg,#171b35,#0d1022);border:1px solid #3b345d;border-radius:16px;padding:14px;box-shadow:0 8px 30px #0006}
+nav{display:grid;gap:9px}nav button{background:#171b35;text-align:left;box-shadow:none;border:1px solid #373452}
+main{min-width:0}.hero{height:360px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 100%,#6c164d,#141735 55%,#090d20);border:1px solid var(--accent);border-radius:18px;box-shadow:0 0 25px var(--glow);display:flex;align-items:center;justify-content:center}
+.hero:before{content:"";position:absolute;inset:auto -10% 20px;height:3px;background:linear-gradient(90deg,transparent,var(--accent),#ffcf56);transform:rotate(-13deg);box-shadow:0 0 20px var(--accent)}
+.plane{font-size:88px;filter:drop-shadow(0 0 20px var(--accent));position:absolute;top:48px;right:14%;transform:rotate(-12deg);animation:float 2.5s ease-in-out infinite}
+@keyframes float{50%{transform:translate(-12px,-14px) rotate(-8deg)}}
+.mult{font-size:clamp(55px,9vw,100px);font-weight:1000;color:#64ff62;text-shadow:0 0 24px #27ff55;z-index:1}.tag{position:absolute;left:24px;top:22px;font-size:clamp(25px,4vw,42px);font-weight:900;font-style:italic}.tag small{display:block;font-size:16px;color:#ffd44e}
+.controls{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:10px;margin-top:12px}.controls .panel{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+input{background:#080b18;color:white;border:1px solid #4a4569;border-radius:8px;padding:10px;width:90px}
+.green{background:#13b95a}.purple{background:#7d27ed}.history{margin-top:12px}.history table{width:100%;border-collapse:collapse;text-align:left}.history td,.history th{padding:8px;border-bottom:1px solid #302c49}.win{color:#52ff88}.loss{color:#ff596b}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.swatch{width:25px;height:25px;border-radius:50%;border:2px solid white;cursor:pointer}
+input[type=color]{width:100%;height:42px;padding:3px}.hint{color:#aeb4d3;font-size:12px;line-height:1.5}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.layout aside:first-child{order:2} .layout main{order:1}.layout aside:last-child{order:3}nav{grid-template-columns:repeat(2,1fr)}.controls{grid-template-columns:1fr}.hero{height:300px}}
+</style></head>
+<body>
+<header><div class="logo">✈ AVIATOR DEMO</div><div class="wallet">🪙 Virtual coins: <b id="coins">12,850</b></div></header>
+<div class="layout">
+<aside class="panel"><h3>MENU</h3><nav><button>⌂ Home</button><button>🎮 Game demo</button><button>🪙 Virtual wallet</button><button>📈 Game history</button><button>🎨 Colour picker</button></nav><p class="hint">Demo mode only. No deposits, withdrawals, or real-money betting.</p></aside>
+<main>
+<section class="hero"><div class="tag">Fly Higher<small>Play with virtual coins</small></div><div class="plane">🛩️</div><div class="mult" id="mult">1.00x</div></section>
+<section class="controls">
+<div class="panel"><div><b>Bet amount</b><br><input id="bet" type="number" min="10" max="5000" value="100"></div><button id="minus">−</button><button id="plus">+</button></div>
+<div class="panel"><button class="green" id="play">▶ PLAY</button><span id="status" class="hint">Ready for a demo round</span></div>
+<div class="panel"><div><b>Auto cash-out</b><br><input id="auto" type="number" min="1.1" max="20" step=".1" value="2.00"> x</div><button class="purple" id="cash" disabled>CASH OUT</button></div>
+</section>
+<section class="panel history"><h3>🏆 Game history</h3><table><thead><tr><th>Round</th><th>Multiplier</th><th>Result</th><th>Coins</th></tr></thead><tbody id="rows"><tr><td>—</td><td>—</td><td>Waiting</td><td>—</td></tr></tbody></table></section>
+</main>
+<aside class="panel"><h3>🎨 Colour picker</h3><label>Choose your theme colour</label><input id="color" type="color" value="#ff2738"><div class="swatches">
+<span class="swatch" style="background:#ff2738" data-c="#ff2738"></span><span class="swatch" style="background:#8b35ff" data-c="#8b35ff"></span><span class="swatch" style="background:#00bfff" data-c="#00bfff"></span><span class="swatch" style="background:#00c878" data-c="#00c878"></span><span class="swatch" style="background:#ffb000" data-c="#ffb000"></span><span class="swatch" style="background:#ff4fc3" data-c="#ff4fc3"></span></div><h3>Quick settings</h3><p class="hint">Pick any colour to update the buttons, graph glow, and highlights instantly.</p><button id="reset" class="purple">Reset theme</button><hr style="border-color:#383451"><p class="hint">This is a local browser demo. Coins are fictional and have no cash value.</p></aside>
+</div>
+<script>
+let coins=12850,round=0,timer=null,m=1,bet=100,active=false;
+const $=id=>document.getElementById(id);
+function showCoins(){$('coins').textContent=coins.toLocaleString('en-IN')}
+function theme(c){document.documentElement.style.setProperty('--accent',c);document.documentElement.style.setProperty('--glow',c+'66');$('color').value=c}
+$('color').addEventListener('input',e=>theme(e.target.value));
+document.querySelectorAll('.swatch').forEach(s=>s.onclick=()=>theme(s.dataset.c));
+$('reset').onclick=()=>theme('#ff2738');
+$('minus').onclick=()=>{$('bet').value=Math.max(10,(+$('bet').value||100)-10)};
+$('plus').onclick=()=>{$('bet').value=Math.min(5000,(+$('bet').value||100)+10)};
+function end(win,mult){active=false;clearInterval(timer);$('cash').disabled=true;$('play').disabled=false;
+let delta=win?Math.floor(bet*mult):0;if(win)coins+=delta;showCoins();round++;
+let tr=document.createElement('tr');tr.innerHTML=`<td>${round}</td><td>${mult.toFixed(2)}x</td><td class="${win?'win':'loss'}">${win?'Cashed out':'Round ended'}</td><td>${win?'+'+delta:'-'+bet}</td>`;$('rows').prepend(tr);$('status').textContent=win?'Nice! Demo coins added.':'Plane flew away — try another demo round.';
+}
+$('play').onclick=()=>{if(active)return;bet=Math.floor(+$('bet').value);if(!Number.isFinite(bet)||bet<10||bet>5000){$('status').textContent='Enter 10–5,000 virtual coins.';return}if(bet>coins){$('status').textContent='Not enough virtual coins.';return}
+coins-=bet;showCoins();active=true;m=1;$('play').disabled=true;$('cash').disabled=false;$('status').textContent='Round in progress…';let crash=1.25+Math.random()*5.5;
+timer=setInterval(()=>{m+=.03+Math.random()*.08;$('mult').textContent=m.toFixed(2)+'x';if(m>=+$('auto').value){end(true,m)}else if(m>=crash){end(false,m)}},120)};
+$('cash').onclick=()=>{if(active)end(true,m)};
+</script></body></html>
